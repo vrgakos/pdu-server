@@ -1,0 +1,74 @@
+syntax = "proto3";
+
+package protos;
+
+service PduServer {
+    rpc ClientHello (HelloRequest) returns (HelloResponse) {}
+    rpc ClientCollect (CollectRequest) returns (CollectResponse) {}
+    rpc NodeCollect (NodeCollectRequest) returns (CollectResponse) {}
+
+    rpc WatchNodeControl(NodeControlRequest) returns (stream NodeControlResponse) {}
+    rpc WatchClientControl(ClientControlRequest) returns (stream ClientControlResponse) {}
+}
+
+
+message HelloRequest {
+    string id = 1;
+    string name = 2;
+    ClientMode mode = 3;
+    string nid = 4;
+}
+
+message HelloResponse {
+    uint32 cid = 1;
+    bool ok = 2;
+}
+
+message CollectRequest {
+    uint32 cid = 1;
+    repeated MeasureData data = 2;
+    int64 time = 3;
+}
+
+message CollectResponse {
+    bool ok = 1;
+}
+
+message NodeCollectRequest {
+    string nid = 1;
+    repeated MeasureData data = 2;
+    int64 time = 3;
+}
+
+message MeasureData {
+    string name = 1;
+    uint64 value = 2;
+}
+
+
+message NodeControlRequest {
+    string id = 1;
+    string name = 2;
+}
+
+message NodeControlResponse {
+    string asd = 1;
+}
+
+message ClientControlRequest {
+    uint32 cid = 1;
+}
+
+message ClientControlResponse {
+    bool enabled = 1;
+    string command = 2;
+    repeated string args = 3;
+    bool repeat = 4;
+    uint32 repeatDelay = 5;
+}
+
+
+enum ClientMode {
+    MEASURE = 0;
+    STRESS = 1;
+}
